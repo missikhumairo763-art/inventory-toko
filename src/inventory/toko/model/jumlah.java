@@ -8,6 +8,6 @@ package inventory.toko.model;
  *
  * @author Admin
  */
-class retur {
+class jumlah {
     
 }
