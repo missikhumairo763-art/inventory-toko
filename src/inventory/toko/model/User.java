@@ -4,6 +4,13 @@
  */
 package inventory.toko.model;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author Admin
@@ -22,7 +29,7 @@ public class User {
 
     // Constructor dengan parameter
     public User(int idUser, String username, String password,
-            String namaLengkap, String level) {
+                String namaLengkap, String level) {
 
         this.idUser = idUser;
         this.username = username;
@@ -76,5 +83,58 @@ public class User {
         this.level = level;
     }
 
-    
+    public void create() throws SQLException {
+        String sql = "INSERT INTO users (username, password, nama_lengkap, level) VALUES (?, ?, ?, ?)";
+        Connection conn = Koneksi.getKoneksi();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, username);
+            pst.setString(2, password);
+            pst.setString(3, namaLengkap);
+            pst.setString(4, level);
+            pst.executeUpdate();
+        }
+    }
+
+    public void update() throws SQLException {
+        String sql = "UPDATE users SET username = ?, password = ?, nama_lengkap = ?, level = ? WHERE id_user = ?";
+        Connection conn = Koneksi.getKoneksi();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, username);
+            pst.setString(2, password);
+            pst.setString(3, namaLengkap);
+            pst.setString(4, level);
+            pst.setInt(5, idUser);
+            pst.executeUpdate();
+        }
+    }
+
+    public void delete() throws SQLException {
+        String sql = "DELETE FROM users WHERE id_user = ?";
+        Connection conn = Koneksi.getKoneksi();
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, idUser);
+            pst.executeUpdate();
+        }
+    }
+
+    public static List<User> list() throws SQLException {
+        String sql = "SELECT id_user, username, password, nama_lengkap, level FROM users ORDER BY id_user DESC";
+        List<User> daftarUser = new ArrayList<>();
+        Connection conn = Koneksi.getKoneksi();
+        try (PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                User user = new User();
+                user.setIdUser(rs.getInt("id_user"));
+                user.setUsername(rs.getString("username"));
+                user.setPassword(rs.getString("password"));
+                user.setNamaLengkap(rs.getString("nama_lengkap"));
+                user.setLevel(rs.getString("level"));
+                daftarUser.add(user);
+            }
+        }
+        return daftarUser;
+    }
+
+
 }
