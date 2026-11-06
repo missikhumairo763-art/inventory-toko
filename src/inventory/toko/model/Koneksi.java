@@ -17,11 +17,11 @@ public class Koneksi {
                 String password = "";
 
                 DriverManager.registerDriver(
-                    new com.mysql.cj.jdbc.Driver()
+                        new com.mysql.cj.jdbc.Driver()
                 );
 
                 koneksi = DriverManager.getConnection(
-                    url, user, password
+                        url, user, password
                 );
 
                 System.out.println("Koneksi Database Berhasil!");
